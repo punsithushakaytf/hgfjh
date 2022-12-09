@@ -1,137 +1,36 @@
-# Supported tags and respective `Dockerfile` links
+# About
 
--	[`2.8-dev0`, `2.8`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.8/Dockerfile)
--	[`2.7.0`, `2.7`, `latest`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.7/Dockerfile)
--	[`2.6.7`, `2.6`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.6/Dockerfile)
--	[`2.5.10`, `2.5`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.5/Dockerfile)
--	[`2.4.20`, `2.4`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.4/Dockerfile)
--	[`2.3.21`, `2.3`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.3/Dockerfile)
--	[`2.2.26`, `2.2`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.2/Dockerfile)
--	[`2.1.12`, `2.1`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.1/Dockerfile)
--	[`2.0.30`, `2.0`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/2.0/Dockerfile)
--	[`1.9.16`, `1.9`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/1.9/Dockerfile)
--	[`1.8.31`, `1.8`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/1.8/Dockerfile)
--	[`1.7.14`, `1.7`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/1.7/Dockerfile)
--	[`1.6.16`, `1.6`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/1.6/Dockerfile)
--	[`1.5.19`, `1.5`](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/1.5/Dockerfile)
+This is a github action to run ubuntu vps through Chrome Remote Desktop. 
 
-# Quick reference
+# Disclaimer
 
-- **Where to get help**:  
-  [HAProxy mailing list](mailto:haproxy@formilux.org), [HAProxy Community Slack](https://slack.haproxy.org/) or [#haproxy on FreeNode](irc://chat.freenode.net:6697/haproxy)
+I am not responsible if you're account is banned. 
+Don't use this vps for :
+* Cryptomining
+* Using our servers to disrupt, or to gain or to attempt to gain unauthorized access to, any service, device, data, account, or network (other than those authorized by the GitHub Bug Bounty program)
+* The provision of a stand-alone or integrated application or service offering Actions or any elements of Actions for commercial purposes
+* Any activity that places a burden on our servers, where that burden is disproportionate to the benefits provided to users (for example, don't use Actions as a content delivery network or as part of a serverless application, but a low benefit Action could be ok if it’s also low burden)
+* Any other activity unrelated to the production, testing, deployment, or publication of the software project associated with the repository where GitHub Actions are used.
 
-- **Where to file issues**:  
-  [https://github.com/haproxytech/haproxy-docker-ubuntu/issues](https://github.com/haproxytech/haproxy-docker-ubuntu/issues)
-
-- **Maintained by**:  
-  [HAProxy Technologies](https://github.com/haproxytech)
-
-- **Supported architectures**: ([more info](https://github.com/docker-library/official-images#architectures-other-than-amd64))  
-  [`amd64`](https://hub.docker.com/r/amd64/haproxy/)
-
-- **Image updates**:  
-  [commits to `haproxytech/haproxy-docker-ubuntu`](https://github.com/haproxytech/haproxy-docker-ubuntu/commits/main), [top level `haproxytech/haproxy-docker-ubuntu` image folder](https://github.com/haproxytech/haproxy-docker-ubuntu)
-
-- **Source of this description**:  
-  [README.md](https://github.com/haproxytech/haproxy-docker-ubuntu/blob/main/README.md)
-
-# What is HAProxy?
-
-HAProxy is the fastest and most widely used open-source load balancer and application delivery controller. Written in C, it has a reputation for efficient use of both processor and memory. It can proxy at either layer 4 (TCP) or layer 7 (HTTP) and has additional features for inspecting, routing and modifying HTTP messages.
-
-It comes bundled with a web UI, called the HAProxy Stats page, that you can use to monitor error rates, the volume of traffic and latency. Features can be toggled on by updating a single configuration file, which provides a syntax for defining routing rules, rate limiting, access controls, and more.
-
-Other features include:
-
-- SSL/TLS termination
-- Gzip compression
-- Health checking
-- HTTP/2
-- gRPC support
-- Lua scripting
-- DNS service discovery
-- Automatic retries of failed conenctions
-- Verbose logging
-
-![logo](https://www.haproxy.org/img/HAProxyCommunityEdition_60px.png)
-
-# How to use this image
-
-This image is being shipped with a trivial sample configuration and for any real life use it should be configured according to the [extensive documentation](https://cbonte.github.io/haproxy-dconv/) and [examples](https://github.com/haproxy/haproxy/tree/main/examples). We will now show how to override shipped haproxy.cfg with one of your own.
-
-## Create a `Dockerfile`
-
-```dockerfile
-FROM haproxytech/haproxy-ubuntu:2.0
-COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
-```
-
-## Build the container
-
-```console
-$ docker build -t my-haproxy .
-```
-
-## Test the configuration file
-
-```console
-$ docker run -it --rm my-haproxy haproxy -c -f /usr/local/etc/haproxy/haproxy.cfg
-```
-
-## Run the container
-
-```console
-$ docker run -d --name my-running-haproxy my-haproxy
-```
-
-You will also need to publish the ports your HAProxy is listening on to the host by specifying the `-p` option, for example `-p 8080:80` to publish port 8080 from the container host to port 80 in the container.
-
-## Use volume for configuration persistency
-
-```console
-$ docker run -d --name my-running-haproxy -v /path/to/etc/haproxy:/usr/local/etc/haproxy:ro haproxytech/haproxy-ubuntu:2.0
-```
-
-Note that your host's `/path/to/etc/haproxy` folder should be populated with a file named `haproxy.cfg` as well as any other accompanying files local to `/etc/haproxy`.
-
-## Reloading config
-
-To be able to reload HAProxy configuration, you can send `SIGHUP` to the container:
-
-```console
-$ docker kill -s HUP my-running-haproxy
-```
-
-To achieve seamless reloads it is required to use `expose-fd listeners` and socket transfers which are not enabled by default. More on this topic is in the blog post [Truly Seamless Reloads with HAProxy](https://www.haproxy.com/blog/truly-seamless-reloads-with-haproxy-no-more-hacks/).
-
-## Enable Data Plane API
-
-[Data Plane API](https://www.haproxy.com/documentation/hapee/2-2r1/reference/dataplaneapi/) sidecar is being distributed by default in all 2.0+ images and to enable it there are a few steps required:
-
-1. define one or more users through `userlist`
-2. enable dataplane api process through `program api`
-3. enable haproxy.cfg to be read/write mounted in Docker, either by defining volume being r/w or by rebuilding image with your own haproxy.cfg
-4. expose dataplane TCP port in Docker with `--expose`
-
-Relevant part of haproxy.cfg is below:
-
-```
-userlist haproxy-dataplaneapi
-    user admin insecure-password mypassword
-
-program api
-   command /usr/bin/dataplaneapi --host 0.0.0.0 --port 5555 --haproxy-bin /usr/sbin/haproxy --config-file /usr/local/etc/haproxy/haproxy.cfg --reload-cmd "kill -SIGUSR2 1" --reload-delay 5 --userlist haproxy-dataplaneapi
-   no option start-on-reload
-```
-
-To run such image we would use the following command (note that volume containing haproxy.cfg is mounted r/w and port tcp/5555 is being exposed):
-
-```console
-$ docker run -d --name my-running-haproxy --expose 5555 -v /path/to/etc/haproxy:/usr/local/etc/haproxy:rw haproxytech/haproxy-ubuntu
-```
+# How to use ?
+* Click `Fork` to create a new repository.
+* Go to action tab and select ubuntu in `select workflow` option.
+* Fill the auth. code from  `https://remotedesktop.google.com/headless`
+* Next fill the second gap.
+* Wate for about 10 minutes.
 
 # License
 
-View [license information](https://raw.githubusercontent.com/haproxy/haproxy/main/LICENSE) for the software contained in this image.
+        Copyright (c) 2022 Diwas007
 
-As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
